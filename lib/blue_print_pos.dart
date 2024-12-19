@@ -202,6 +202,14 @@ class BluePrintPos {
         );
         print(
             '\n\nCHKi ==> bluetoothService:\n${bluetoothService.remoteId.str}');
+
+        print('CHKi characteristics ==> -------------------');
+        for (final BluetoothCharacteristic i
+            in bluetoothService.characteristics) {
+          print('CHKi characteristics ==> ${i.toString()}\n\n');
+        }
+        print('CHKi characteristics ==> -------------------');
+
         final List<BluetoothCharacteristic> writableCharacteristics =
             bluetoothService.characteristics
                 .where((BluetoothCharacteristic bluetoothCharacteristic) =>
