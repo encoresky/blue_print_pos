@@ -194,27 +194,38 @@ class BluePrintPos {
         final List<BluetoothService> bluetoothServices =
             await _bluetoothDeviceIOS?.discoverServices() ??
                 <BluetoothService>[];
+        print('\n\nCHKi ==> bluetoothServices:\n${bluetoothServices.length}');
+        print(
+            '\nCHKi ==> bluetoothServices data:\n${bluetoothServices.toString()}');
         final BluetoothService bluetoothService = bluetoothServices.firstWhere(
           (BluetoothService service) => service.isPrimary,
         );
+        print(
+            '\n\nCHKi ==> bluetoothService:\n${bluetoothService.remoteId.str}');
         final List<BluetoothCharacteristic> writableCharacteristics =
             bluetoothService.characteristics
                 .where((BluetoothCharacteristic bluetoothCharacteristic) =>
                     bluetoothCharacteristic.properties.write == true)
                 .toList();
-
-        // Split data into chunks of 182 bytes
-        const int chunkSize = 182;
-        final int len = byteBuffer.length;
-        for (int i = 0; i < len; i += chunkSize) {
-          // Get the current chunk
-          final List<int> chunk = byteBuffer.sublist(
-            i,
-            i + chunkSize > len ? len : i + chunkSize,
-          );
-
-          // Write chunk to the characteristic
-          await writableCharacteristics[i].write(chunk, withoutResponse: true);
+        print(
+            '\n\nCHKi ==> writableCharacteristics:\n${writableCharacteristics.length}');
+        print(
+            '\nCHKi ==> writableCharacteristics data:\n${writableCharacteristics.toString()}');
+        if (writableCharacteristics.isNotEmpty) {
+          await writableCharacteristics[0]
+              .write(byteBuffer, withoutResponse: true, allowLongWrite: true);
+        } else {
+          final List<BluetoothCharacteristic>
+              writableWithoutResponseCharacteristics = bluetoothService
+                  .characteristics
+                  .where((BluetoothCharacteristic bluetoothCharacteristic) =>
+                      bluetoothCharacteristic.properties.writeWithoutResponse ==
+                      true)
+                  .toList();
+          if (writableWithoutResponseCharacteristics.isNotEmpty) {
+            await writableWithoutResponseCharacteristics[0]
+                .write(byteBuffer, withoutResponse: true);
+          }
         }
       }
     } on Exception catch (error) {
