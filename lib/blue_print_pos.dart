@@ -221,7 +221,7 @@ class BluePrintPos {
             '\nCHKi ==> writableCharacteristics data:\n${writableCharacteristics.toString()}');
         if (writableCharacteristics.isNotEmpty) {
           await writableCharacteristics[0]
-              .write(byteBuffer, withoutResponse: true, allowLongWrite: true);
+              .write(byteBuffer, withoutResponse: true);
         } else {
           final List<BluetoothCharacteristic>
               writableWithoutResponseCharacteristics = bluetoothService
