@@ -212,8 +212,8 @@ class BluePrintPos {
 
         final List<BluetoothCharacteristic> writableCharacteristics =
             bluetoothService.characteristics
-                .where((BluetoothCharacteristic bluetoothCharacteristic) =>
-                    bluetoothCharacteristic.properties.write == true)
+                // .where((BluetoothCharacteristic bluetoothCharacteristic) =>
+                //     bluetoothCharacteristic.properties.write == true)
                 .toList();
         print(
             '\n\nCHKi ==> writableCharacteristics:\n${writableCharacteristics.length}');
