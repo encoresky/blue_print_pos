@@ -194,32 +194,24 @@ class BluePrintPos {
         final List<BluetoothService> bluetoothServices =
             await _bluetoothDeviceIOS?.discoverServices() ??
                 <BluetoothService>[];
-        final BluetoothService bluetoothService =
-            bluetoothServices.firstWhere(
-          (BluetoothService service) => service.isPrimary,
-        );
-        final List<BluetoothCharacteristic>
-            writableCharacteristics = bluetoothService.characteristics
-                .where((BluetoothCharacteristic
-                        bluetoothCharacteristic) =>
-                    bluetoothCharacteristic.properties.write == true)
-                .toList();
-        if (writableCharacteristics.isNotEmpty) {
-          await writableCharacteristics[0]
-              .write(byteBuffer, withoutResponse: true);
-        } else {
-          final List<BluetoothCharacteristic>
-              writableWithoutResponseCharacteristics = bluetoothService
-                  .characteristics
-                  .where((BluetoothCharacteristic
-                          bluetoothCharacteristic) =>
-                      bluetoothCharacteristic.properties.writeWithoutResponse ==
-                      true)
-                  .toList();
-          if (writableWithoutResponseCharacteristics.isNotEmpty) {
-            await writableWithoutResponseCharacteristics[0]
-                .write(byteBuffer, withoutResponse: true);
-          }
+        final BluetoothService bluetoothService = bluetoothServices
+            .firstWhere((BluetoothService service) => service.isPrimary);
+        final BluetoothCharacteristic characteristic = bluetoothService
+            .characteristics
+            .firstWhere((BluetoothCharacteristic c) => c.properties.write);
+
+        // Split data into chunks of 182 bytes
+        const int chunkSize = 182;
+        final int len = byteBuffer.length;
+        for (int i = 0; i < len; i += chunkSize) {
+          // Get the current chunk
+          final List<int> chunk = byteBuffer.sublist(
+            i,
+            i + chunkSize > len ? len : i + chunkSize,
+          );
+
+          // Write chunk to the characteristic
+          await characteristic.write(chunk, withoutResponse: true);
         }
       }
     } on Exception catch (error) {
