@@ -194,11 +194,14 @@ class BluePrintPos {
         final List<BluetoothService> bluetoothServices =
             await _bluetoothDeviceIOS?.discoverServices() ??
                 <BluetoothService>[];
-        final BluetoothService bluetoothService = bluetoothServices
-            .firstWhere((BluetoothService service) => service.isPrimary);
-        final BluetoothCharacteristic characteristic = bluetoothService
-            .characteristics
-            .firstWhere((BluetoothCharacteristic c) => c.properties.write);
+        final BluetoothService bluetoothService = bluetoothServices.firstWhere(
+          (BluetoothService service) => service.isPrimary,
+        );
+        final List<BluetoothCharacteristic> writableCharacteristics =
+            bluetoothService.characteristics
+                .where((BluetoothCharacteristic bluetoothCharacteristic) =>
+                    bluetoothCharacteristic.properties.write == true)
+                .toList();
 
         // Split data into chunks of 182 bytes
         const int chunkSize = 182;
@@ -211,7 +214,7 @@ class BluePrintPos {
           );
 
           // Write chunk to the characteristic
-          await characteristic.write(chunk, withoutResponse: true);
+          await writableCharacteristics[i].write(chunk, withoutResponse: true);
         }
       }
     } on Exception catch (error) {
