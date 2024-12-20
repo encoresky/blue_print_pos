@@ -362,7 +362,9 @@ class BluePrintPos {
       final Image image = await qrPainter.toImage(size);
       final ByteData? byteData =
           await image.toByteData(format: ImageByteFormat.png);
-      return base64.encode(Uint8List.view(byteData!.buffer));
+      final Uint8List? pngBytes = byteData?.buffer.asUint8List();
+      assert(pngBytes != null);
+      return base64Encode(pngBytes!);
     } on Exception catch (exception) {
       print('$runtimeType - $exception');
       rethrow;
