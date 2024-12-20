@@ -169,7 +169,7 @@ class BluePrintPos {
   }) async {
     final List<int> byteBuffer = await _getQRImage(data, size.toDouble());
     printReceiptImage(
-      byteBuffer,
+      Platform.isAndroid ? byteBuffer : Uint8List.fromList(byteBuffer),
       width: size,
       feedCount: feedCount,
       useCut: useCut,
