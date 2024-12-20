@@ -249,7 +249,7 @@ class BluePrintPos {
   Future<void> _writeInChunks(
     BluetoothCharacteristic characteristic,
     Uint8List data, {
-    int chunkSize = 235, // Default to 237 bytes for withoutResponse
+    int chunkSize = 237, // Default to 237 bytes for withoutResponse
   }) async {
     int offset = 0;
 
@@ -259,7 +259,7 @@ class BluePrintPos {
           (offset + chunkSize < data.length) ? offset + chunkSize : data.length;
 
       // Get the current chunk
-      Uint8List chunk = data.sublist(offset, end);
+      final Uint8List chunk = data.sublist(offset, end);
 
       // Write the chunk to the characteristic
       await characteristic.write(chunk, withoutResponse: true);
