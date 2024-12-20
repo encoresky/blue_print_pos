@@ -139,7 +139,7 @@ class BluePrintPos {
   /// [feedCount] to create more space after printing process done
   /// [useCut] to cut printing process
   Future<void> printReceiptImage(
-    List<int> bytes, {
+    Uint8List bytes, {
     int width = 120,
     int feedCount = 0,
     bool useCut = false,
@@ -167,9 +167,9 @@ class BluePrintPos {
     int feedCount = 0,
     bool useCut = false,
   }) async {
-    final List<int> byteBuffer = await _getQRImage(data, size.toDouble());
+    final Uint8List byteBuffer = await _getQRImage(data, size.toDouble());
     printReceiptImage(
-      Platform.isAndroid ? byteBuffer : Uint8List.fromList(byteBuffer),
+      byteBuffer,
       width: size,
       feedCount: feedCount,
       useCut: useCut,
