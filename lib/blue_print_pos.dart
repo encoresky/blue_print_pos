@@ -328,7 +328,7 @@ class BluePrintPos {
 
   /// Handler to generate QR image from [text] and set the [size].
   /// Using painter and convert to [Image] object and return as [Uint8List]
-  Future<Uint8List> _getQRImage(String text, double size) async {
+  Future<String> _getQRImage(String text, double size) async {
     try {
       // final Image image = await QrPainter(
       //   data: text,
