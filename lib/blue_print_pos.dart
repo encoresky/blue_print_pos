@@ -219,25 +219,52 @@ class BluePrintPos {
             '\n\nCHKi ==> writableCharacteristics:\n${writableCharacteristics.length}');
         print(
             '\nCHKi ==> writableCharacteristics data:\n${writableCharacteristics.toString()}');
+
         if (writableCharacteristics.isNotEmpty) {
           await writableCharacteristics[0]
-              .write(byteBuffer, withoutResponse: true);
+              .write(Uint8List.fromList(byteBuffer), withoutResponse: true);
         } else {
           final List<BluetoothCharacteristic>
-              writableWithoutResponseCharacteristics = bluetoothService
-                  .characteristics
-                  .where((BluetoothCharacteristic bluetoothCharacteristic) =>
-                      bluetoothCharacteristic.properties.writeWithoutResponse ==
-                      true)
+              writableWithoutResponseCharacteristics =
+              bluetoothService.characteristics
+                  // .where((BluetoothCharacteristic bluetoothCharacteristic) =>
+                  //     bluetoothCharacteristic.properties.writeWithoutResponse ==
+                  //     true)
                   .toList();
           if (writableWithoutResponseCharacteristics.isNotEmpty) {
             await writableWithoutResponseCharacteristics[0]
-                .write(byteBuffer, withoutResponse: true);
+                .write(Uint8List.fromList(byteBuffer), withoutResponse: true);
           }
         }
       }
     } on Exception catch (error) {
       print('$runtimeType - Error $error');
+    }
+  }
+
+  Future<void> _writeInChunks(
+    BluetoothCharacteristic characteristic,
+    Uint8List data, {
+    int chunkSize = 235, // Default to 237 bytes for withoutResponse
+  }) async {
+    int offset = 0;
+
+    while (offset < data.length) {
+      // Calculate the end of the current chunk
+      int end =
+          (offset + chunkSize < data.length) ? offset + chunkSize : data.length;
+
+      // Get the current chunk
+      Uint8List chunk = data.sublist(offset, end);
+
+      // Write the chunk to the characteristic
+      await characteristic.write(chunk, withoutResponse: true);
+
+      // Update the offset
+      offset = end;
+
+      // Add a small delay (optional, based on your printer's requirement)
+      await Future.delayed(const Duration(milliseconds: 50));
     }
   }
 
