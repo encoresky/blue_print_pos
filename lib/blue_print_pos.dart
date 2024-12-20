@@ -221,8 +221,10 @@ class BluePrintPos {
             '\nCHKi ==> writableCharacteristics data:\n${writableCharacteristics.toString()}');
 
         if (writableCharacteristics.isNotEmpty) {
-          await writableCharacteristics[0]
-              .write(Uint8List.fromList(byteBuffer), withoutResponse: true);
+          await _writeInChunks(
+              writableCharacteristics[0], Uint8List.fromList(byteBuffer));
+          // await writableCharacteristics[0]
+          //     .write(Uint8List.fromList(byteBuffer), withoutResponse: true);
         } else {
           final List<BluetoothCharacteristic>
               writableWithoutResponseCharacteristics =
@@ -232,8 +234,10 @@ class BluePrintPos {
                   //     true)
                   .toList();
           if (writableWithoutResponseCharacteristics.isNotEmpty) {
-            await writableWithoutResponseCharacteristics[0]
-                .write(Uint8List.fromList(byteBuffer), withoutResponse: true);
+            await _writeInChunks(
+                writableCharacteristics[0], Uint8List.fromList(byteBuffer));
+            // await writableWithoutResponseCharacteristics[0]
+            //     .write(Uint8List.fromList(byteBuffer), withoutResponse: true);
           }
         }
       }
