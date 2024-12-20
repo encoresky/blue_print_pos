@@ -167,10 +167,6 @@ class BluePrintPos {
     int feedCount = 0,
     bool useCut = false,
   }) async {
-    final Uint8List byteBuffer = await _getQRImage(data, size.toDouble());
-    printReceiptImage(
-      byteBuffer,
-      width: size,
     final String base64 = await _getQRImage(data, size.toDouble());
 
     final receiptImage = ReceiptSectionText();
