@@ -316,6 +316,12 @@ class BluePrintPos {
         gapless: false,
         color: const Color(0xFF000000),
         emptyColor: const Color(0xFFFFFFFF),
+        // eyeStyle: const QrEyeStyle(
+        //   color: Color(0xFFFFFFFF),
+        // ),
+        // dataModuleStyle: const QrDataModuleStyle(
+        //   color: Color(0xFF000000),
+        // ),
       ).toImage(size);
       final ByteData? byteData =
           await image.toByteData(format: ImageByteFormat.png);
