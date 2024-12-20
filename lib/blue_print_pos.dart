@@ -176,7 +176,7 @@ class BluePrintPos {
 
     final Uint8List bytes = await contentToImage(
       content: receiptImage.content,
-      duration: 0,
+      duration: 2000,
     );
     final List<int> byteBuffer = await _getBytes(
       bytes,
