@@ -171,9 +171,28 @@ class BluePrintPos {
     printReceiptImage(
       byteBuffer,
       width: size,
+
+    final receiptImage = ReceiptSectionText();
+    receiptImage.addImage(base64, width: size);
+
+    final Uint8List bytes = await contentToImage(
+      content: receiptImage.content,
+      duration: 0,
+    );
+    final List<int> byteBuffer = await _getBytes(
+      bytes,
+      customWidth: size,
       feedCount: feedCount,
       useCut: useCut,
+      useRaster: false,
+      paperSize: PaperSize.mm58,
     );
+    _printProcess(byteBuffer);
+    // final Uint8List bytes = await contentToImage(
+    //   content: byteBuffer,
+    //   duration: 0,
+    //   useCut: useCut,
+    // );
   }
 
   /// Reusable method for print text, image or QR based value [byteBuffer]
@@ -183,11 +202,12 @@ class BluePrintPos {
     try {
       if (selectedDevice == null) {
         print('$runtimeType - Device not selected');
-        return Future<void>.value(null);
+        return;
       }
       if (!_isConnected && selectedDevice != null) {
         await connect(selectedDevice!);
       }
+
       if (Platform.isAndroid) {
         _bluetoothAndroid?.writeBytes(Uint8List.fromList(byteBuffer));
       } else if (Platform.isIOS) {
@@ -310,23 +330,37 @@ class BluePrintPos {
   /// Using painter and convert to [Image] object and return as [Uint8List]
   Future<Uint8List> _getQRImage(String text, double size) async {
     try {
-      final Image image = await QrPainter(
+      // final Image image = await QrPainter(
+      //   data: text,
+      //   version: QrVersions.auto,
+      //   gapless: false,
+      //   color: const Color(0xFF000000),
+      //   emptyColor: const Color(0xFFFFFFFF),
+      //   // eyeStyle: const QrEyeStyle(
+      //   //   color: Color(0xFFFFFFFF),
+      //   // ),
+      //   // dataModuleStyle: const QrDataModuleStyle(
+      //   //   color: Color(0xFF000000),
+      //   // ),
+      // ).toImage(size);
+      // final ByteData? byteData =
+      //     await image.toByteData(format: ImageByteFormat.png);
+      // assert(byteData != null);
+      // return byteData!.buffer.asUint8List();
+
+      final QrPainter qrPainter = QrPainter(
         data: text,
         version: QrVersions.auto,
         gapless: false,
         color: const Color(0xFF000000),
         emptyColor: const Color(0xFFFFFFFF),
-        // eyeStyle: const QrEyeStyle(
-        //   color: Color(0xFFFFFFFF),
-        // ),
-        // dataModuleStyle: const QrDataModuleStyle(
-        //   color: Color(0xFF000000),
-        // ),
-      ).toImage(size);
+      );
+
+      // Convert QrPainter to Image
+      final Image image = await qrPainter.toImage(size);
       final ByteData? byteData =
           await image.toByteData(format: ImageByteFormat.png);
-      assert(byteData != null);
-      return byteData!.buffer.asUint8List();
+      return base64.encode(Uint8List.view(byteData!.buffer));
     } on Exception catch (exception) {
       print('$runtimeType - $exception');
       rethrow;
