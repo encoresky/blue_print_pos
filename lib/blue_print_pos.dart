@@ -171,6 +171,8 @@ class BluePrintPos {
   }) async {
     final String base64 = await _getQRImage(data, size.toDouble());
 
+    print('CHKi BASE64 ==> \n\n$base64\n\n');
+
     final receiptImage = ReceiptSectionText();
     receiptImage.addImage(base64, width: size);
 
