@@ -168,9 +168,6 @@ class BluePrintPos {
   }) async {
     final String base64 = await _getQRImage(data, size.toDouble());
 
-    print('CHKi BASE64 ==> \n\n$base64\n\n');
-
-    final receiptImage = ReceiptSectionText();
     final ReceiptSectionText receiptImage = ReceiptSectionText();
     receiptImage.addImage(base64, width: size);
 
@@ -187,13 +184,6 @@ class BluePrintPos {
       paperSize: PaperSize.mm58,
     );
     _printProcess(byteBuffer);
-    //   duration: 0,
-    // );
-    // printReceiptImage(
-    //   bytes,
-    //   width: size,
-    //   feedCount: feedCount,
-    //   useCut: useCut,
   }
 
   Future<String> getQRImage(
@@ -226,23 +216,14 @@ class BluePrintPos {
         final BluetoothService bluetoothService = bluetoothServices.firstWhere(
           (BluetoothService service) => service.isPrimary,
         );
-
-        print('CHKi characteristics ==> -------------------');
-        for (final BluetoothCharacteristic i
-            in bluetoothService.characteristics) {
-          print('CHKi characteristics ==> ${i.toString()}\n\n');
         final List<BluetoothCharacteristic> writableCharacteristics =
             bluetoothService.characteristics
                 // .where((BluetoothCharacteristic bluetoothCharacteristic) =>
                 //     bluetoothCharacteristic.properties.write == true)
                 .toList();
-        print(
-            '\nCHKi ==> writableCharacteristics data:\n${writableCharacteristics.toString()}');
-
         if (writableCharacteristics.isNotEmpty) {
           await _writeInChunks(
               writableCharacteristics[0], Uint8List.fromList(byteBuffer));
-          // await writableCharacteristics[0]
         } else {
           final List<BluetoothCharacteristic>
               writableWithoutResponseCharacteristics =
@@ -254,7 +235,6 @@ class BluePrintPos {
           if (writableWithoutResponseCharacteristics.isNotEmpty) {
             await _writeInChunks(
                 writableCharacteristics[0], Uint8List.fromList(byteBuffer));
-            // await writableWithoutResponseCharacteristics[0]
           }
         }
       }
@@ -327,14 +307,6 @@ class BluePrintPos {
   /// Using painter and convert to [Image] object and return as [Uint8List]
   Future<String> _getQRImage(String text, double size) async {
     try {
-      //   //   color: Color(0xFF000000),
-      //   // ),
-      // ).toImage(size);
-      // final ByteData? byteData =
-      //     await image.toByteData(format: ImageByteFormat.png);
-      // assert(byteData != null);
-      // return byteData!.buffer.asUint8List();
-
       final QrPainter qrPainter = QrPainter(
         data: text,
         version: QrVersions.auto,
