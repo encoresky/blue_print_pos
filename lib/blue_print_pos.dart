@@ -9,7 +9,6 @@ import 'package:blue_print_pos/receipt/receipt_section_text.dart';
 import 'package:blue_print_pos/scanner/blue_scanner.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart' as blue_thermal;
 import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
-// import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:image/image.dart' as img;
@@ -75,7 +74,6 @@ class BluePrintPos {
             .indexWhere((BluetoothDevice bluetoothDevice) {
           return bluetoothDevice.id == _bluetoothDeviceIOS?.id;
         });
-
         if (deviceConnectedIndex < 0) {
           await _bluetoothDeviceIOS?.connect();
         }
@@ -121,7 +119,6 @@ class BluePrintPos {
     double duration = 0,
     PaperSize paperSize = PaperSize.mm58,
   }) async {
-    paperSize = Platform.isAndroid ? PaperSize.mm72 : PaperSize.mm58;
     final Uint8List bytes = await contentToImage(
       content: receiptSectionText.content,
       duration: duration,
@@ -174,6 +171,7 @@ class BluePrintPos {
     print('CHKi BASE64 ==> \n\n$base64\n\n');
 
     final receiptImage = ReceiptSectionText();
+    final ReceiptSectionText receiptImage = ReceiptSectionText();
     receiptImage.addImage(base64, width: size);
 
     final Uint8List bytes = await contentToImage(
@@ -189,8 +187,6 @@ class BluePrintPos {
       paperSize: PaperSize.mm58,
     );
     _printProcess(byteBuffer);
-    // final Uint8List bytes = await contentToImage(
-    //   content: byteBuffer,
     //   duration: 0,
     // );
     // printReceiptImage(
@@ -198,7 +194,6 @@ class BluePrintPos {
     //   width: size,
     //   feedCount: feedCount,
     //   useCut: useCut,
-    // );
   }
 
   Future<String> getQRImage(
@@ -228,29 +223,19 @@ class BluePrintPos {
         final List<BluetoothService> bluetoothServices =
             await _bluetoothDeviceIOS?.discoverServices() ??
                 <BluetoothService>[];
-        print('\n\nCHKi ==> bluetoothServices:\n${bluetoothServices.length}');
-        print(
-            '\nCHKi ==> bluetoothServices data:\n${bluetoothServices.toString()}');
         final BluetoothService bluetoothService = bluetoothServices.firstWhere(
           (BluetoothService service) => service.isPrimary,
         );
-        print(
-            '\n\nCHKi ==> bluetoothService:\n${bluetoothService.remoteId.str}');
 
         print('CHKi characteristics ==> -------------------');
         for (final BluetoothCharacteristic i
             in bluetoothService.characteristics) {
           print('CHKi characteristics ==> ${i.toString()}\n\n');
-        }
-        print('CHKi characteristics ==> -------------------');
-
         final List<BluetoothCharacteristic> writableCharacteristics =
             bluetoothService.characteristics
                 // .where((BluetoothCharacteristic bluetoothCharacteristic) =>
                 //     bluetoothCharacteristic.properties.write == true)
                 .toList();
-        print(
-            '\n\nCHKi ==> writableCharacteristics:\n${writableCharacteristics.length}');
         print(
             '\nCHKi ==> writableCharacteristics data:\n${writableCharacteristics.toString()}');
 
@@ -258,7 +243,6 @@ class BluePrintPos {
           await _writeInChunks(
               writableCharacteristics[0], Uint8List.fromList(byteBuffer));
           // await writableCharacteristics[0]
-          //     .write(Uint8List.fromList(byteBuffer), withoutResponse: true);
         } else {
           final List<BluetoothCharacteristic>
               writableWithoutResponseCharacteristics =
@@ -271,7 +255,6 @@ class BluePrintPos {
             await _writeInChunks(
                 writableCharacteristics[0], Uint8List.fromList(byteBuffer));
             // await writableWithoutResponseCharacteristics[0]
-            //     .write(Uint8List.fromList(byteBuffer), withoutResponse: true);
           }
         }
       }
@@ -344,16 +327,6 @@ class BluePrintPos {
   /// Using painter and convert to [Image] object and return as [Uint8List]
   Future<String> _getQRImage(String text, double size) async {
     try {
-      // final Image image = await QrPainter(
-      //   data: text,
-      //   version: QrVersions.auto,
-      //   gapless: false,
-      //   color: const Color(0xFF000000),
-      //   emptyColor: const Color(0xFFFFFFFF),
-      //   // eyeStyle: const QrEyeStyle(
-      //   //   color: Color(0xFFFFFFFF),
-      //   // ),
-      //   // dataModuleStyle: const QrDataModuleStyle(
       //   //   color: Color(0xFF000000),
       //   // ),
       // ).toImage(size);
