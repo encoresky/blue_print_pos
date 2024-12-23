@@ -161,37 +161,52 @@ class BluePrintPos {
   /// define [size] to size of QR, default value is 120
   /// [feedCount] to create more space after printing process done
   /// [useCut] to cut printing process
+  // Future<void> printQR(
+  //   String data, {
+  //   int size = 120,
+  //   int feedCount = 0,
+  //   bool useCut = false,
+  // }) async {
+  //   final String base64 = await _getQRImage(data, size.toDouble());
+
+  //   final ReceiptSectionText receiptImage = ReceiptSectionText();
+  //   receiptImage.addImage(base64, width: size);
+
+  //   final Uint8List bytes = await contentToImage(
+  //     content: receiptImage.content,
+  //     duration: 2000,
+  //   );
+  //   final List<int> byteBuffer = await _getBytes(
+  //     bytes,
+  //     customWidth: size,
+  //     feedCount: feedCount,
+  //     useCut: useCut,
+  //     useRaster: false,
+  //     paperSize: PaperSize.mm58,
+  //   );
+  //   _printProcess(byteBuffer);
+  // }
+
   Future<void> printQR(
     String data, {
     int size = 120,
     int feedCount = 0,
     bool useCut = false,
   }) async {
-    final String base64 = await _getQRImage(data, size.toDouble());
-
-    final ReceiptSectionText receiptImage = ReceiptSectionText();
-    receiptImage.addImage(base64, width: size);
-
-    final Uint8List bytes = await contentToImage(
-      content: receiptImage.content,
-      duration: 2000,
-    );
-    final List<int> byteBuffer = await _getBytes(
-      bytes,
-      customWidth: size,
+    final Uint8List byteBuffer = await _getQRImage(data, size.toDouble());
+    printReceiptImage(
+      byteBuffer,
+      width: size,
       feedCount: feedCount,
       useCut: useCut,
-      useRaster: false,
-      paperSize: PaperSize.mm58,
     );
-    _printProcess(byteBuffer);
   }
 
   Future<String> getQRImage(
     String data, {
     int size = 120,
   }) async {
-    final String base64 = await _getQRImage(data, size.toDouble());
+    final String base64 = await _getQRImageBase64(data, size.toDouble());
     return base64;
   }
 
@@ -306,7 +321,7 @@ class BluePrintPos {
 
   /// Handler to generate QR image from [text] and set the [size].
   /// Using painter and convert to [Image] object and return as [Uint8List]
-  Future<String> _getQRImage(String text, double size) async {
+  Future<String> _getQRImageBase64(String text, double size) async {
     try {
       final QrPainter qrPainter = QrPainter(
         data: text,
@@ -314,8 +329,6 @@ class BluePrintPos {
         gapless: false,
         eyeStyle: const QrEyeStyle(color: Color(0xFF000000)),
         dataModuleStyle: const QrDataModuleStyle(color: Color(0xFFFFFFFF)),
-        // color: const Color(0xFF000000),
-        // emptyColor: const Color(0xFFFFFFFF),
       );
 
       // Convert QrPainter to Image
@@ -325,6 +338,27 @@ class BluePrintPos {
       final Uint8List? pngBytes = byteData?.buffer.asUint8List();
       assert(pngBytes != null);
       return base64Encode(pngBytes!);
+    } on Exception catch (exception) {
+      print('$runtimeType - $exception');
+      rethrow;
+    }
+  }
+
+  Future<Uint8List> _getQRImage(String text, double size) async {
+    try {
+      final Image image = await QrPainter(
+        data: text,
+        version: QrVersions.auto,
+        gapless: false,
+        eyeStyle: const QrEyeStyle(color: Color(0xFF000000)),
+        dataModuleStyle: const QrDataModuleStyle(color: Color(0xFFFFFFFF)),
+        // color: const Color(0xFF000000),
+        // emptyColor: const Color(0xFFFFFFFF),
+      ).toImage(size);
+      final ByteData? byteData =
+          await image.toByteData(format: ImageByteFormat.png);
+      assert(byteData != null);
+      return byteData!.buffer.asUint8List();
     } on Exception catch (exception) {
       print('$runtimeType - $exception');
       rethrow;
