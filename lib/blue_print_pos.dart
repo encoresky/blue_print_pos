@@ -201,6 +201,14 @@ class BluePrintPos {
     // );
   }
 
+  Future<String> getQRImage(
+    String data, {
+    int size = 120,
+  }) async {
+    final String base64 = await _getQRImage(data, size.toDouble());
+    return base64;
+  }
+
   /// Reusable method for print text, image or QR based value [byteBuffer]
   /// Handler Android or iOS will use method writeBytes from ByteBuffer
   /// But in iOS more complex handler using service and characteristic
