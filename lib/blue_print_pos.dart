@@ -327,8 +327,10 @@ class BluePrintPos {
         data: text,
         version: QrVersions.auto,
         gapless: false,
-        eyeStyle: const QrEyeStyle(color: Color(0xFF000000)),
-        dataModuleStyle: const QrDataModuleStyle(color: Color(0xFFFFFFFF)),
+        // eyeStyle: const QrEyeStyle(color: Color(0xFF000000)),
+        // dataModuleStyle: const QrDataModuleStyle(color: Color(0xFFFFFFFF)),
+        color: const Color(0xFF000000),
+        emptyColor: const Color(0xFFFFFFFF),
       );
 
       // Convert QrPainter to Image
@@ -350,10 +352,10 @@ class BluePrintPos {
         data: text,
         version: QrVersions.auto,
         gapless: false,
-        eyeStyle: const QrEyeStyle(color: Color(0xFF000000)),
-        dataModuleStyle: const QrDataModuleStyle(color: Color(0xFFFFFFFF)),
-        // color: const Color(0xFF000000),
-        // emptyColor: const Color(0xFFFFFFFF),
+        // eyeStyle: const QrEyeStyle(color: Color(0xFF000000)),
+        // dataModuleStyle: const QrDataModuleStyle(color: Color(0xFFFFFFFF)),
+        color: const Color(0xFF000000),
+        emptyColor: const Color(0xFFFFFFFF),
       ).toImage(size);
       final ByteData? byteData =
           await image.toByteData(format: ImageByteFormat.png);
