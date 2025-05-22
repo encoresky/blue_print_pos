@@ -28,7 +28,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Blue Print Pos'),
+          title: const Text('Blue Print Pos App'),
         ),
         body: SafeArea(
           child: _isLoading && _blueDevices.isEmpty
