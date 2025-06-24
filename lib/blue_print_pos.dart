@@ -59,14 +59,7 @@ class BluePrintPos {
                 selectedDevice?.name ?? '', selectedDevice?.address ?? '');
         await _bluetoothAndroid?.connect(bluetoothDeviceAndroid);
       } else if (Platform.isIOS) {
-        _bluetoothDeviceIOS = BluetoothDevice.fromProto(
-          BmBluetoothDevice(
-            platformName: Platform.operatingSystem,
-            // localName: selectedDevice?.name ?? '',
-            remoteId: DeviceIdentifier(selectedDevice?.address ?? ''),
-            // type: BmBluetoothSpecEnum.values[selectedDevice?.type ?? 0],
-          ),
-        );
+        _bluetoothDeviceIOS = BluetoothDevice.fromId(selectedDevice?.address ?? '');
         final List<BluetoothDevice> connectedDevices =
             await FlutterBluePlus.connectedSystemDevices;
 

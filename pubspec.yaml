@@ -1,10 +1,10 @@
 name: blue_print_pos
 description: Plugin to connecting bluetooth printer device, support on Android and iOS
-version: 0.0.14
+version: 1.0.1
 homepage: https://github.com/andriyoganp/blue_print_pos
 
 environment:
-  sdk: ">=2.16.0 <3.0.0"
+  sdk: ">=2.16.0 <4.0.0"
   flutter: ">=1.20.0"
 
 dependencies:
