@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -25,143 +25,145 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Blue Print Pos'),
-        ),
-        body: SafeArea(
-          child: _isLoading && _blueDevices.isEmpty
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                  ),
-                )
-              : _blueDevices.isNotEmpty
-                  ? SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Column(
-                            children: List<Widget>.generate(_blueDevices.length,
-                                (int index) {
-                              return Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: _blueDevices[index].address ==
-                                              (_selectedDevice?.address ?? '')
-                                          ? _onDisconnectDevice
-                                          : () => _onSelectDevice(index),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Text(
-                                              _blueDevices[index].name,
-                                              style: TextStyle(
-                                                color:
-                                                    _selectedDevice?.address ==
-                                                            _blueDevices[index]
-                                                                .address
-                                                        ? Colors.blue
-                                                        : Colors.black,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w500,
-                                              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Blue Print Pos'),
+      ),
+      body: SafeArea(
+        child: _isLoading && _blueDevices.isEmpty
+            ? const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                ),
+              )
+            : _blueDevices.isNotEmpty
+                ? SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Column(
+                          children: List<Widget>.generate(_blueDevices.length,
+                              (int index) {
+                            return Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: _blueDevices[index].address ==
+                                            (_selectedDevice?.address ?? '')
+                                        ? _onDisconnectDevice
+                                        : () => _onSelectDevice(index),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            _blueDevices[index].name,
+                                            style: TextStyle(
+                                              color: _selectedDevice?.address ==
+                                                      _blueDevices[index]
+                                                          .address
+                                                  ? Colors.blue
+                                                  : Colors.black,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                            Text(
-                                              _blueDevices[index].address,
-                                              style: TextStyle(
-                                                color:
-                                                    _selectedDevice?.address ==
-                                                            _blueDevices[index]
-                                                                .address
-                                                        ? Colors.blueGrey
-                                                        : Colors.grey,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
-                                              ),
+                                          ),
+                                          Text(
+                                            _blueDevices[index].address,
+                                            style: TextStyle(
+                                              color: _selectedDevice?.address ==
+                                                      _blueDevices[index]
+                                                          .address
+                                                  ? Colors.blueGrey
+                                                  : Colors.grey,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                  if (_loadingAtIndex == index && _isLoading)
-                                    Container(
-                                      height: 24.0,
-                                      width: 24.0,
-                                      margin: const EdgeInsets.only(right: 8.0),
-                                      child: const CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                          Colors.blue,
-                                        ),
+                                ),
+                                if (_loadingAtIndex == index && _isLoading)
+                                  Container(
+                                    height: 24.0,
+                                    width: 24.0,
+                                    margin: const EdgeInsets.only(right: 8.0),
+                                    child: const CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.blue,
                                       ),
                                     ),
-                                  if (!_isLoading &&
-                                      _blueDevices[index].address ==
-                                          (_selectedDevice?.address ?? ''))
-                                    TextButton(
-                                      onPressed: _onPrintReceipt,
-                                      child: Container(
-                                        color: _selectedDevice == null
-                                            ? Colors.grey
-                                            : Colors.blue,
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: const Text(
-                                          'Test Print',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
+                                  ),
+                                if (!_isLoading &&
+                                    _blueDevices[index].address ==
+                                        (_selectedDevice?.address ?? ''))
+                                  TextButton(
+                                    onPressed: _onPrintReceipt,
+                                    child: Container(
+                                      color: _selectedDevice == null
+                                          ? Colors.grey
+                                          : Colors.blue,
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: const Text(
+                                        'Test Print',
+                                        style: TextStyle(color: Colors.white),
                                       ),
-                                      style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty
-                                            .resolveWith<Color>(
-                                          (Set<MaterialState> states) {
-                                            if (states.contains(
-                                                MaterialState.pressed)) {
-                                              return Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withOpacity(0.5);
-                                            }
+                                    ),
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty
+                                          .resolveWith<Color>(
+                                        (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.pressed)) {
                                             return Theme.of(context)
-                                                .primaryColor;
-                                          },
-                                        ),
+                                                .colorScheme
+                                                .primary
+                                                .withOpacity(0.5);
+                                          }
+                                          return Theme.of(context).primaryColor;
+                                        },
                                       ),
                                     ),
-                                ],
-                              );
-                            }),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          Text(
-                            'Scan bluetooth device',
-                            style: TextStyle(fontSize: 24, color: Colors.blue),
-                          ),
-                          Text(
-                            'Press button scan',
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
-                          ),
-                        ],
-                      ),
+                                  ),
+                              ],
+                            );
+                          }),
+                        ),
+                      ],
                     ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _isLoading ? null : _onScanPressed,
-          child: const Icon(Icons.search),
-          backgroundColor: _isLoading ? Colors.grey : Colors.blue,
-        ),
+                  )
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Scan bluetooth device',
+                          style: TextStyle(fontSize: 24, color: Colors.blue),
+                        ),
+                        Text(
+                          'Press button scan',
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                        // Add a button to test the new flutter_pos_print channel
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: ElevatedButton(
+                            onPressed: _onTestFlutterPosPrint,
+                            child: const Text('Test flutter_pos_print channel'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _isLoading ? null : _onScanPressed,
+        child: const Icon(Icons.search),
+        backgroundColor: _isLoading ? Colors.grey : Colors.blue,
       ),
     );
   }
@@ -266,5 +268,22 @@ class _MyAppState extends State<MyApp> {
         size: ReceiptTextSizeType.small);
     receiptSecondText.addSpacer();
     await _bluePrintPos.printReceiptText(receiptSecondText, feedCount: 1);
+  }
+
+  Future<void> _onTestFlutterPosPrint() async {
+    final result = await BluePrintPos.getPlatformVersion();
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('flutter_pos_print Result'),
+        content: Text(result ?? 'No result'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 }

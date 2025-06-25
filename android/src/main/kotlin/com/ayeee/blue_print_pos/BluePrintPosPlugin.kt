@@ -37,6 +37,9 @@ class BluePrintPosPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, "blue_print_pos")
         channel.setMethodCallHandler(this)
         context = flutterPluginBinding.applicationContext
+
+        // Register the new flutter_pos_print channel
+        FlutterPosPrintPlugin().onAttachedToEngine(flutterPluginBinding)
     }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {

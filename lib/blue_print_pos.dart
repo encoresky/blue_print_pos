@@ -22,6 +22,7 @@ class BluePrintPos {
   static BluePrintPos get instance => BluePrintPos._();
 
   static const MethodChannel _channel = MethodChannel('blue_print_pos');
+  static const MethodChannel _posPrintChannel = MethodChannel('flutter_pos_print');
 
   /// This field is library to handle in Android Platform
   blue_thermal.BlueThermalPrinter? _bluetoothAndroid;
@@ -377,5 +378,163 @@ class BluePrintPos {
       throw Exception('Error: $e');
     }
     return results;
+  }
+
+  ////////////// ===========  Functions for new flutter print pos plugin   ========== ////////////
+  
+  static Future<String?> getPlatformVersion() async {
+    final version =
+        await _posPrintChannel.invokeMethod<String>('getPlatformVersion');
+    return version;
+  }
+
+  static Future<bool?> connectBT(String address) async {
+    final isConnect = await _posPrintChannel
+        .invokeMethod<bool>('connectBT', {'address': address});
+    return isConnect;
+  }
+
+  static Future<bool?> autoConnectBT(String address) async {
+    final isConnect = await _posPrintChannel
+        .invokeMethod<bool>('autoConnectBT', {'address': address});
+    return isConnect;
+  }
+
+  static Future<Uint8List?> generateQrCode(String data) async {
+    final bytes = await _posPrintChannel
+        .invokeMethod<Uint8List>('generateQrCode', {'data': data});
+    return bytes;
+  }
+
+  static Future<bool?> printTestInvoice(
+    bool isEnLang,
+    String heading,
+    String subHeading,
+    String date,
+    String time,
+    String supportEmail,
+    String supportPhone,
+  ) async {
+    final success = _posPrintChannel.invokeMethod<bool>(
+      'printTestInvoice',
+      {
+        'isEnLang': isEnLang,
+        'heading': heading,
+        'subHeading': subHeading,
+        'date': date,
+        'time': time,
+        'supportEmail': supportEmail,
+        'supportPhone': supportPhone
+      },
+    );
+
+    return success;
+  }
+
+  static Future<bool?> printInvoice(
+    bool isEnLang,
+    bool qrEnable,
+    String date,
+    String time,
+    String store,
+    String cardName,
+    String redeemCode,
+    String serialNumber,
+    String instructions,
+    String supportEmail,
+    String supportPhone,
+    String advertiseText,
+    String logo,
+  ) {
+    final success = _posPrintChannel.invokeMethod<bool>(
+      'printInvoice',
+      {
+        'isEnLang': isEnLang,
+        'qrEnable': qrEnable,
+        'date': date,
+        'time': time,
+        'store': store,
+        'cardName': cardName,
+        'redeemCode': redeemCode,
+        'serialNumber': serialNumber,
+        'instructions': instructions,
+        'supportEmail': supportEmail,
+        'supportPhone': supportPhone,
+        'advertiseText': advertiseText,
+        'logo': logo,
+      },
+    );
+
+    return success;
+  }
+
+  static Future<bool?> printCompanyInvoice(
+    bool isEnLang,
+    String voucherCode,
+    String id,
+    String date,
+    String time,
+    String store,
+    String companyName,
+    String companyNumber,
+    String amount,
+    String supportEmail,
+    String supportPhone,
+  ) async {
+    final success = await _posPrintChannel.invokeMethod<bool>(
+      'printCompanyInvoice',
+      {
+        'isEnLang': isEnLang,
+        'voucherCode': voucherCode,
+        'id': id,
+        'date': date,
+        'time': time,
+        'store': store,
+        'companyName': companyName,
+        'companyNumber': companyNumber,
+        'amount': amount,
+        'supportEmail': supportEmail,
+        'supportPhone': supportPhone
+      },
+    );
+
+    return success;
+  }
+
+  static Future<bool?> printDailyReport(
+    bool isEnLang,
+    String fromDate,
+    String toDate,
+    String store,
+    List<Map<String, dynamic>> reportData,
+    String totalCard,
+    String totalQuantity,
+    String totalAmount,
+    String totalProfit,
+    String date,
+    String time,
+    String supportEmail,
+    String supportPhone,
+  ) async {
+    final success = await _posPrintChannel.invokeMethod<bool>(
+      'printDailyReport',
+      {
+        'isEnLang': isEnLang,
+        'fromDate': fromDate,
+        'toDate': toDate,
+        'store': store,
+        'reportData': reportData,
+        'totalCard': totalCard,
+        'totalQuantity': totalQuantity,
+        'totalAmount': totalAmount,
+        'totalProfit': totalProfit,
+        'date': date,
+        'time': time,
+        'supportEmail': supportEmail,
+        'supportPhone': supportPhone,
+      },
+    );
+
+    return success;
   }
 }

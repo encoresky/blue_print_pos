@@ -1,2 +1,7 @@
-<manifest package="com.ayeee.blue_print_pos">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+ package="com.ayeee.blue_print_pos">
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
 </manifest>
